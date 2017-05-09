@@ -1,0 +1,159 @@
+﻿@model EvaluationForm.Models.Employee
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Evaluation</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <script type="text/javascript">
+
+            $(document).ready(function () {              
+
+                var percentUnitIncrease =  100 / $(".eval-ctrl").length;                
+
+                var dict = {
+                    "FirstName": false,
+                    "LastName": false,
+                    "Department" : false
+                }
+
+                /******************************************Common function for updating dictionary and setting progress bar**************/
+
+                function CheckForTextValues(idOfTextBox)
+                {
+                    if ($("#" + idOfTextBox).val().length > 0) {
+                        dict[idOfTextBox] = true;
+                    }
+                    else {
+                        dict[idOfTextBox] = false;
+                    }
+
+                    var percentage = 0;
+
+                    for(var key in dict)
+                    {
+                        if (dict[key] == true)
+                            percentage += percentUnitIncrease;
+                    }
+
+                    $(".progress-bar").css("width", percentage + "%");
+                }
+
+                /*************************Capturing events based on blur event****************************************
+                *For each focus out event it should validate text box and call for updating progress bar accordingly**/
+
+                $("#FirstName").blur(function () {
+                    CheckForTextValues("FirstName");
+                })
+
+                $("#LastName").blur(function () {
+                    CheckForTextValues("LastName");
+                })
+
+                $("#Department").blur(function () {
+                    CheckForTextValues("Department");
+                })
+
+
+
+
+               /*********************************************************************************************************/
+                $(".form-horizontal").on('keydown', '#FirstName', function (e) {
+                    
+                    var keyCode = e.keyCode || e.which;
+
+                    if (keyCode == 9) {
+                        CheckForTextValues("FirstName");
+                        //e.preventDefault();
+                        alert("tab pressed");
+
+                        // call custom function here
+                    }
+                });
+
+                $(".form-horizontal").on('keydown', '#LastName', function (e) {
+
+                    var keyCode = e.keyCode || e.which;
+
+                    if (keyCode == 9) {
+                        CheckForTextValues("LastName");
+                        e.preventDefault();
+                        //alert("tab pressed");
+                        // call custom function here
+                    }
+                });
+
+                $(".form-horizontal").on('keydown', '#Department', function (e) {
+
+                    var keyCode = e.keyCode || e.which;
+
+                    if (keyCode == 9) {
+                        CheckForTextValues("Department");
+                        //e.preventDefault();
+                        //alert("tab pressed");
+                        // call custom function here
+                    }
+                });
+               
+            //$(".progress-bar").css("width", 50 + "%");
+
+
+        }
+       );
+        </script>
+        <h4>Employee</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName,  new { htmlAttributes = new { @class = "form-control eval-ctrl" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control eval-ctrl" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Department, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Department, new { htmlAttributes = new { @class = "form-control eval-ctrl" } })
+                @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-default" />
+            </div>
+        </div>
+        <div>
+            <div class="progress">
+                <div id="ProgressDiv" class="progress-bar progress-bar-success active progress-striped" style="width:0%; min-width:0%">
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to All Evaluations", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
